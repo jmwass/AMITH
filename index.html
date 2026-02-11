@@ -294,13 +294,22 @@
     
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        const targetLocation = {
-            name: "Talenti Headquarters",
-            address: "100 University Ave SE, Minneapolis, MN 55414",
-            lat: 44.9734,
-            lng: -93.2290,
-            activity: "Eating the whole supply"
-        };
+        const locations = [
+            {
+                name: "Talenti Headquarters",
+                address: "100 University Ave SE, Minneapolis, MN 55414",
+                lat: 44.9734,
+                lng: -93.2290,
+                activity: "Eating the whole supply"
+            },
+            {
+                name: "India",
+                address: "New Delhi, India",
+                lat: 28.6139,
+                lng: 77.2090,
+                activity: "Exploring the homeland"
+            }
+        ];
         
         let map, marker;
         let scanCount = 0;
@@ -316,7 +325,7 @@
             
             try {
                 // Initialize map
-                map = L.map('map').setView([targetLocation.lat, targetLocation.lng], 16);
+                map = L.map('map').setView([locations[0].lat, locations[0].lng], 16);
                 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '© OpenStreetMap contributors',
@@ -331,7 +340,7 @@
                     iconAnchor: [75, 75]
                 });
                 
-                marker = L.marker([targetLocation.lat, targetLocation.lng], { icon: customIcon }).addTo(map);
+                marker = L.marker([locations[0].lat, locations[0].lng], { icon: customIcon }).addTo(map);
                 
                 initialized = true;
                 document.getElementById('locateBtn').disabled = false;
@@ -368,10 +377,11 @@
             `;
             
             setTimeout(() => {
+                const selectedLocation = locations[Math.floor(Math.random() * locations.length)];
                 const confidence = Math.floor(Math.random() * 5) + 95; // 95-99% confidence
                 
-                marker.setLatLng([targetLocation.lat, targetLocation.lng]);
-                map.flyTo([targetLocation.lat, targetLocation.lng], 16, { duration: 1.5 });
+                marker.setLatLng([selectedLocation.lat, selectedLocation.lng]);
+                map.flyTo([selectedLocation.lat, selectedLocation.lng], 14, { duration: 1.5 });
                 
                 document.getElementById('statusText').textContent = 'LOCKED';
                 document.getElementById('statusDot').classList.remove('scanning');
@@ -382,9 +392,9 @@
                 const now = new Date();
                 document.getElementById('locationContent').innerHTML = `
                     <div class="location-info">
-                        <h2>${targetLocation.name}</h2>
-                        <p class="activity">${targetLocation.activity}</p>
-                        <p class="coords">${targetLocation.address}</p>
+                        <h2>${selectedLocation.name}</h2>
+                        <p class="activity">${selectedLocation.activity}</p>
+                        <p class="coords">${selectedLocation.address}</p>
                         <p class="timestamp">${now.toLocaleTimeString()}</p>
                     </div>
                 `;
